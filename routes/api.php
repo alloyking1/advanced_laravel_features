@@ -17,8 +17,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('auth')->group(function(){
-    Route::post('/create', 'SessionsController@create');
-    Route::post('/login', 'SessionsController@LogIn');
-    Route::get('/logout', 'SessionsController@LogOut');
+// Route::prefix('auth')->group(function(){
+//     Route::post('/create', 'SessionsController@create');
+//     Route::post('/login', 'SessionsController@LogIn');
+//     Route::get('/logout', 'SessionsController@LogOut');
+// });
+
+Route::post('register', 'UserController@register');
+Route::post('login', 'UserController@authenticate');
+Route::get('open', 'DataController@open');
+Route::get('logout', 'UserController@logout');
+
+Route::group(['middleware' => ['jwt.verify']], function() {
+    Route::get('user', 'UserController@getAuthenticatedUser');
+    Route::get('closed', 'DataController@closed');
 });
